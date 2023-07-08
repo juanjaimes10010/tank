@@ -31,25 +31,32 @@ class ResourceManager {
     async load() {
 
         const textureLoader = new TextureLoader();
+        const modelLoader = new GLTFLoader();
+
         await this.loadGroundTextures( textureLoader );
         await this.loadTankTextures( textureLoader );
+        await this.loadModels( modelLoader );
     }
 
-    async loadModels() {
+    async loadModels( modelLoader) {
 
-        const modelLoader = new GLTFLoader();
-        const playerTank = await modelLoader.loadAsync( "tank/models/tank.glb" );
-        this._models.set( "tank", playerTank )
+        const playerTank = await modelLoader.loadAsync( "./models/tank.glb" );
+        this._models.set( "tank", playerTank );
 
     }
 
     async loadTankTextures( textureLoader ) {
 
-        const tankBodyTexture = await textureLoader.loadAsync( "tank/textures/tank-body.png" );
-        const tankTurretTexture = await textureLoader.loadAsync( "tank/textures/tank-turret.png" );
+        const tankBodyTexture = await textureLoader.loadAsync( "./textures/tank-body.png" );
+        const tankTurretTexture = await textureLoader.loadAsync( "./textures/tank-turret.png" );
 
         this._textures.set( "tank-body", tankBodyTexture );
         this._textures.set( "tank-turret", tankTurretTexture );
+
+
+        const wallTexture = await textureLoader.loadAsync( "./textures/wall.png" );
+
+        this._textures.set( "wall", wallTexture );
 
     }
 
@@ -58,15 +65,17 @@ class ResourceManager {
             "grass_rock.jpg",
             "jungle_stone.jpg"
         ];
-
-        const texture = await textureLoader.loadAsync(  "tank/textures/grass_rock.jpg" )
-        this._groundTextures.push( texture );
+        
+        textures.forEach( async texture => { 
+            const t = await textureLoader.loadAsync( `./textures/${ texture }` )
+            this._groundTextures.push( t )
+        });
 
     }
 
     getGroundTexture() {
 
-        return this._groundTextures[0];
+        return this._groundTextures[ Math.floor( Math.random() * this._groundTextures.length )];
 
     }
       
