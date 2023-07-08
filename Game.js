@@ -104,7 +104,7 @@ class Game {
 
         this._entities = [
             ...this._entities.filter( e => !e.shouldDispose )
-        ];1
+        ];
 
     }
 
